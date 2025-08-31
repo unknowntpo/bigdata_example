@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- Basic HDFS Configuration -->
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+        <description>Default block replication (single node setup)</description>
+    </property>
+    
+    <!-- Directory Configuration -->
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///hadoop/dfs/name</value>
+    </property>
+    
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///hadoop/dfs/data</value>
+    </property>
+    
+    <!-- Network Configuration -->
+    <property>
+        <name>dfs.namenode.rpc-bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.servicerpc-bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.http-bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.https-bind-host</name>
+        <value>0.0.0.0</value>
+    </property>
+    
+    <!-- Client Configuration -->
+    <property>
+        <name>dfs.client.use.datanode.hostname</name>
+        <value>false</value>
+        <description>Use IP addresses instead of hostnames for client connections</description>
+    </property>
+    
+    <property>
+        <name>dfs.datanode.use.datanode.hostname</name>
+        <value>false</value>
+    </property>
+    
+    <!-- Security and Permissions -->
+    <property>
+        <name>dfs.permissions.enabled</name>
+        <value>false</value>
+        <description>Disable HDFS permissions for development</description>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.datanode.registration.ip-hostname-check</name>
+        <value>false</value>
+    </property>
+    
+    <!-- WebHDFS -->
+    <property>
+        <name>dfs.webhdfs.enabled</name>
+        <value>true</value>
+        <description>Enable WebHDFS REST API</description>
+    </property>
+    
+    <!-- Safe Mode Configuration (Auto-exit for development) -->
+    <property>
+        <name>dfs.namenode.safemode.threshold-pct</name>
+        <value>0.0</value>
+        <description>Immediately exit safe mode (development only)</description>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.safemode.min.datanodes</name>
+        <value>1</value>
+        <description>Minimum datanodes required to exit safe mode</description>
+    </property>
+    
+    <property>
+        <name>dfs.namenode.safemode.extension</name>
+        <value>0</value>
+        <description>No additional wait time after safe mode conditions are met</description>
+    </property>
+</configuration>

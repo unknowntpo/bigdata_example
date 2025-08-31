@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "defaultSchema": "hive",
+  "schemas": [
+    {
+      "name": "hive",
+      "type": "custom",
+      "factory": "org.apache.calcite.adapter.jdbc.JdbcSchema$Factory",
+      "operand": {
+        "jdbcDriver": "org.apache.hive.jdbc.HiveDriver",
+        "jdbcUrl": "jdbc:hive2://localhost:10000/default",
+        "jdbcUser": "",
+        "jdbcPassword": "",
+        "jdbcCatalog": null,
+        "jdbcSchema": "default"
+      },
+      "tables": [
+        {
+          "name": "tweets",
+          "type": "table"
+        },
+        {
+          "name": "tweets_partitioned",
+          "type": "table"
+        },
+        {
+          "name": "users",
+          "type": "table"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<configuration>
+    <!-- Default file system -->
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://namenode:9000</value>
+        <description>Default file system URI</description>
+    </property>
+    
+    <!-- Security -->
+    <property>
+        <name>hadoop.http.staticuser.user</name>
+        <value>root</value>
+        <description>Default web UI user</description>
+    </property>
+    
+    <!-- Proxy settings -->
+    <property>
+        <name>hadoop.proxyuser.hue.hosts</name>
+        <value>*</value>
+    </property>
+    
+    <property>
+        <name>hadoop.proxyuser.hue.groups</name>
+        <value>*</value>
+    </property>
+    
+    <!-- Compression -->
+    <property>
+        <name>io.compression.codecs</name>
+        <value>org.apache.hadoop.io.compress.SnappyCodec</value>
+    </property>
+</configuration>
