@@ -52,28 +52,26 @@ dependencies {
     implementation(libs.hadoop.hdfs)
     implementation(libs.hadoop.common)
     
-    // Spark
-    implementation(libs.spark.core)
-    implementation(libs.spark.sql)
-    implementation(libs.spark.streaming)
-    implementation(libs.spark.streaming.kafka)
+    // Spark (provided by cluster at runtime)
+    compileOnly(libs.spark.core)
+    compileOnly(libs.spark.sql)
+    compileOnly(libs.spark.streaming)
+    compileOnly(libs.spark.streaming.kafka)
+    
+    // For testing, we need implementation scope
+    testImplementation(libs.spark.core)
+    testImplementation(libs.spark.sql)
+    testImplementation(libs.spark.streaming)
+    testImplementation(libs.spark.streaming.kafka)
     
     // Kafka
     implementation(libs.kafka.clients)
     implementation(libs.kafka.streams)
     
-    // Hive with exclusions for problematic dependencies
-    implementation("org.apache.hive:hive-jdbc:2.3.9") {
-        exclude(group = "org.pentaho", module = "pentaho-aggdesigner-algorithm")
-    }
-    implementation("org.apache.hive:hive-metastore:2.3.9") {
-        exclude(group = "org.pentaho", module = "pentaho-aggdesigner-algorithm")
-    }
-    implementation("org.apache.hive:hive-exec:2.3.9") {
-        exclude(group = "org.pentaho", module = "pentaho-aggdesigner-algorithm")
-        exclude(group = "org.apache.calcite", module = "calcite-core")
-        exclude(group = "org.apache.calcite", module = "calcite-druid")
-    }
+    // Hive dependencies (newer version for JDK 17 compatibility)
+    implementation("org.apache.hive:hive-jdbc:3.1.3")
+    implementation("org.apache.hive:hive-metastore:3.1.3") 
+    implementation("org.apache.hive:hive-exec:3.1.3")
     
     // Apache Calcite
     implementation("org.apache.calcite:calcite-core:1.35.0")
@@ -109,7 +107,7 @@ dependencies {
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(17)
     }
 }
 
@@ -121,56 +119,78 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform {
-        // Exclude Hadoop tests from regular test task
-        excludeTags("hadoop-docker-test")
+        // Exclude Docker tests from regular test task
+        excludeTags("docker-test")
     }
+    
+    // Add JVM arguments for Java 17 compatibility with Spark 3.3.0
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED", 
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens=java.base/java.nio=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
+        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+    )
 }
 
-// Manual Hadoop control tasks (optional - extension handles auto-setup)
-tasks.register<Exec>("startHadoop") {
-    group = "hadoop"
-    description = "Manually start Hadoop services (namenode and datanode)"
+// Manual Docker service control tasks (optional - extension handles auto-setup)
+tasks.register<Exec>("startServices") {
+    group = "docker"
+    description = "Manually start all Docker services (Hadoop + Spark)"
     
     workingDir = file("../")
-    commandLine("docker", "compose", "up", "-d", "namenode", "datanode")
+    commandLine("docker", "compose", "up", "-d")
     
     doLast {
-        println("🚀 Hadoop services started manually!")
+        println("🚀 All Docker services started manually!")
         println("   - Namenode UI: http://localhost:9870")
+        println("   - Spark Master UI: http://localhost:8080")
         println("   - HDFS endpoint: hdfs://localhost:9000")
+        println("   - Spark cluster: spark://localhost:7077")
         println("   - Wait a moment for services to be ready")
     }
 }
 
-tasks.register<Exec>("stopHadoop") {
-    group = "hadoop"
-    description = "Manually stop Hadoop services"
+tasks.register<Exec>("stopServices") {
+    group = "docker"
+    description = "Manually stop all Docker services"
     
     workingDir = file("../")
     commandLine("docker", "compose", "down")
     
     doLast {
-        println("🛑 Hadoop services stopped manually")
+        println("🛑 All Docker services stopped manually")
     }
 }
 
-tasks.register<Test>("testHadoop") {
-    group = "hadoop"
-    description = "Run Hadoop integration tests (tests tagged with 'hadoop-docker-test')"
+tasks.register<Test>("testDocker") {
+    group = "docker"
+    description = "Run Docker integration tests (tests tagged with 'docker-test')"
     
     useJUnitPlatform {
-        includeTags("hadoop-docker-test")
+        includeTags("docker-test")
     }
     
+    // Add JVM arguments for Java 17 compatibility with Spark 3.3.0
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED", 
+        "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
+        "--add-opens=java.base/java.nio=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
+        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+    )
+    
     doFirst {
-        println("🧪 Running tests tagged with 'hadoop-docker-test'...")
-        println("   Hadoop services will be started automatically by test extension")
+        println("🧪 Running tests tagged with 'docker-test'...")
+        println("   Docker services will be started automatically by test extensions")
     }
 }
 
-// Alias for testHadoop - extension handles everything
-tasks.register("hadoopTestFull") {
-    group = "hadoop" 
-    description = "Run Hadoop tests (alias for testHadoop - extension handles setup)"
-    dependsOn("testHadoop")
+// Alias for testDocker - extension handles everything
+tasks.register("dockerTestFull") {
+    group = "docker" 
+    description = "Run Docker tests (alias for testDocker - extension handles setup)"
+    dependsOn("testDocker")
 }

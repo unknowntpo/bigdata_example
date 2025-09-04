@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - From IDE: Click test button → Hadoop auto-starts via extension
  * - From Gradle: ./gradlew testHadoop → Hadoop starts via Gradle tasks
  */
-@Tag("hadoop-docker-test")
+@Tag("docker-test")
 @ExtendWith(HadoopTestExtension.class)
 public class DockerHadoopTest {
 

@@ -14,31 +14,31 @@ import java.util.List;
 public class HDFSWriter {
     private final FileSystem fileSystem;
     private final ObjectMapper objectMapper;
-    
+
     public HDFSWriter(FileSystem fileSystem) {
         this.fileSystem = fileSystem;
         this.objectMapper = new ObjectMapper();
     }
-    
+
     public HDFSWriter(String hdfsUri) throws IOException {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", hdfsUri);
         this.fileSystem = FileSystem.get(conf);
         this.objectMapper = new ObjectMapper();
     }
-    
+
     /**
      * Write a list of objects to HDFS as JSON lines
      */
     public <T> void writeAsJsonLines(List<T> objects, String hdfsPath) throws IOException {
         Path path = new Path(hdfsPath);
-        
+
         // Create parent directories if they don't exist
         Path parent = path.getParent();
         if (parent != null && !fileSystem.exists(parent)) {
             fileSystem.mkdirs(parent);
         }
-        
+
         try (FSDataOutputStream outputStream = fileSystem.create(path, true)) {
             for (T object : objects) {
                 String json = objectMapper.writeValueAsString(object);
@@ -47,10 +47,10 @@ public class HDFSWriter {
             }
             outputStream.hflush();
         }
-        
+
         System.out.println("Successfully wrote " + objects.size() + " objects to " + hdfsPath);
     }
-    
+
     /**
      * Write objects to partitioned path (year/month/day/hour)
      */
@@ -66,17 +66,17 @@ public class HDFSWriter {
             dataType,
             now.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
         );
-        
+
         writeAsJsonLines(objects, partitionedPath);
     }
-    
+
     /**
      * Check if path exists
      */
     public boolean exists(String hdfsPath) throws IOException {
         return fileSystem.exists(new Path(hdfsPath));
     }
-    
+
     /**
      * List files in directory
      */
@@ -92,7 +92,7 @@ public class HDFSWriter {
             System.out.println("Path does not exist: " + hdfsPath);
         }
     }
-    
+
     public void close() throws IOException {
         if (fileSystem != null) {
             fileSystem.close();

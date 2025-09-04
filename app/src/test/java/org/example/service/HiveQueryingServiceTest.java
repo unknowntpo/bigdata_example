@@ -2,7 +2,6 @@ package org.example.service;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
-import org.datanucleus.util.StringUtils;
 import org.example.hadoop.HDFSWriter;
 import org.example.hadoop.HadoopTestExtension;
 import org.example.hive.HiveTestExtension;
@@ -20,7 +19,7 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Tag("hadoop-docker-test")
+@Tag("docker-test")
 @ExtendWith({HadoopTestExtension.class, HiveTestExtension.class})
 class HiveQueryingServiceTest {
     private FileSystem fileSystem;
