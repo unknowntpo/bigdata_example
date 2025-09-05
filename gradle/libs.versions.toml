@@ -12,6 +12,9 @@ slf4j = "2.0.7"
 lombok = "1.18.30"
 validation = "3.0.2"
 commons-lang3 = "3.17.0"
+parquet = "1.12.3"
+hive = "3.1.3"
+calcite = "1.35.0"
 
 [libraries]
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
@@ -56,3 +59,19 @@ hadoop-minicluster = { module = "org.apache.hadoop:hadoop-minicluster", version.
 
 # Apache Commons
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+
+# Parquet libraries 
+parquet-hadoop = { module = "org.apache.parquet:parquet-hadoop", version.ref = "parquet" }
+parquet-common = { module = "org.apache.parquet:parquet-common", version.ref = "parquet" }
+parquet-column = { module = "org.apache.parquet:parquet-column", version.ref = "parquet" }
+
+# Hive libraries
+hive-jdbc = { module = "org.apache.hive:hive-jdbc", version.ref = "hive" }
+hive-metastore = { module = "org.apache.hive:hive-metastore", version.ref = "hive" }
+hive-exec = { module = "org.apache.hive:hive-exec", version.ref = "hive" }
+
+# Apache Calcite libraries
+calcite-core = { module = "org.apache.calcite:calcite-core", version.ref = "calcite" }
+calcite-druid = { module = "org.apache.calcite:calcite-druid", version.ref = "calcite" }
+calcite-file = { module = "org.apache.calcite:calcite-file", version.ref = "calcite" }
+calcite-linq4j = { module = "org.apache.calcite:calcite-linq4j", version.ref = "calcite" }

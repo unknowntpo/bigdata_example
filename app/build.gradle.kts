@@ -69,15 +69,20 @@ dependencies {
     implementation(libs.kafka.streams)
     
     // Hive dependencies (newer version for JDK 17 compatibility)
-    implementation("org.apache.hive:hive-jdbc:3.1.3")
-    implementation("org.apache.hive:hive-metastore:3.1.3") 
-    implementation("org.apache.hive:hive-exec:3.1.3")
+    implementation(libs.hive.jdbc)
+    implementation(libs.hive.metastore)
+    implementation(libs.hive.exec)
     
     // Apache Calcite
-    implementation("org.apache.calcite:calcite-core:1.35.0")
-    implementation("org.apache.calcite:calcite-druid:1.35.0")
-    implementation("org.apache.calcite:calcite-file:1.35.0")
-    implementation("org.apache.calcite:calcite-linq4j:1.35.0")
+    implementation(libs.calcite.core)
+    implementation(libs.calcite.druid)
+    implementation(libs.calcite.file)
+    implementation(libs.calcite.linq4j)
+    
+    // Parquet for file format support
+    implementation(libs.parquet.hadoop)
+    implementation(libs.parquet.common)
+    implementation(libs.parquet.column)
     
     // JSON processing
     implementation(libs.jackson.core)
@@ -123,14 +128,16 @@ tasks.named<Test>("test") {
         excludeTags("docker-test")
     }
     
-    // Add JVM arguments for Java 17 compatibility with Spark 3.3.0
+    // Add JVM arguments for Java 17 compatibility with Spark 3.5.4
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED", 
         "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
         "--add-opens=java.base/java.nio=ALL-UNNAMED",
         "--add-opens=java.base/java.util=ALL-UNNAMED",
-        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-opens=java.base/sun.security.action=ALL-UNNAMED",
+        "--add-opens=java.base/sun.util.calendar=ALL-UNNAMED"
     )
 }
 
@@ -172,14 +179,16 @@ tasks.register<Test>("testDocker") {
         includeTags("docker-test")
     }
     
-    // Add JVM arguments for Java 17 compatibility with Spark 3.3.0
+    // Add JVM arguments for Java 17 compatibility with Spark 3.5.4
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
         "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED", 
         "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
         "--add-opens=java.base/java.nio=ALL-UNNAMED",
         "--add-opens=java.base/java.util=ALL-UNNAMED",
-        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+        "--add-opens=java.base/sun.nio.ch=ALL-UNNAMED",
+        "--add-opens=java.base/sun.security.action=ALL-UNNAMED",
+        "--add-opens=java.base/sun.util.calendar=ALL-UNNAMED"
     )
     
     doFirst {
